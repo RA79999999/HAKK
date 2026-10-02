@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>RA7.518</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ff0033;
+            font-family: 'Courier New', Courier, monospace;
+            display: block;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* إطار شاشة الأمسر */
+        .red-border-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid #ff0033;
+            box-shadow: inset 0 0 20px rgba(255, 0, 51, 0.4), 0 0 35px rgba(255, 0, 51, 0.4);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* منظومة النجوم والرموز المتساقطة الحمراء */
+        #matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.3;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -50px;
+            color: #ff0033;
+            font-size: 18px;
+            font-weight: bold;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(105vh); }
+        }
+
+        /* النصوص العلوية في أعلى الشاشة */
+        .top-banner {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .top-banner h1 {
+            font-size: 65px;
+            color: #ff0033;
+            text-shadow: 0 0 15px #ff0033, 0 0 30px #ff0033, 0 0 45px #ff0033, 0 0 70px #ff0033, 0 0 90px #ff0033;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .sub-title {
+            font-size: 40px;
+            color: #ff0033;
+            text-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033, 0 0 60px #ff0033, 0 0 80px #ff0033, 0 0 90px #ff0033;
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+
+        /* حقل الكتابة الجديد في الأسفل */
+        #bottom-text-input {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            background: transparent;
+            border: none;
+            outline: none;
+            text-align: center;
+            direction: rtl;
+            color: #ff0033;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 40px;
+            font-weight: 900;
+            text-shadow: 0 0 20px #ff0033, 0 0 40px #ff0033, 0 0 60px #ff0033, 0 0 80px #ff0033, 0 0 90px #ff0033;
+            letter-spacing: 4px;
+            z-index: 2;
+        }
+
+        #bottom-text-input::placeholder {
+            color: rgba(255, 0, 51, 0.3);
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- عناصر المنصة -->
+    <div class="red-border-frame"></div>
+
+    <!-- الخلفية المتحركة للرموز -->
+    <div id="matrix"></div>
+
+    <div class="top-banner">
+        <h1>RA7 is here</h1>
+        <h2 class="sub-title">4U ABU 5LOD BDYH IS BACK</h2>
+    </div>
+
+    <!-- حقل الكتابة الجديد في الأسفل -->
+    <input type="text" id="bottom-text-input" placeholder=" انااااا لككم بالمرصااااااد الى ان يرث الله الارض ومن فيهااااا " autofocus>
+
+    <!-- ملف الصوت المرافق -->
+    <audio id="hack-audio" src="mp4_.mp3" preload="auto" loop></audio>
+
+    <script>
+        // تأثير الرموز والنجوم المتساقطة باللون الأحمر
+        const matrixContainer = document.getElementById('matrix');
+        const characters = "01*•.°★ABCDEFGIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%^&()_+";
+
+        function createMatrixColumn() {
+            const col = document.createElement('div');
+            col.className = 'matrix-column';
+            col.style.left = Math.floor(Math.random() * window.innerWidth) + 'px';
+            col.style.color = Math.random() > 0.3 ? '#ff0033' : '#ff6688';
+
+            let columnText = "";
+            let length = Math.floor(Math.random() * 15) + 10;
+            for (let i = 0; i < length; i++) {
+                columnText += characters.charAt(Math.floor(Math.random() * characters.length)) + "<br>";
+            }
+            col.innerHTML = columnText;
+
+            const duration = Math.random() * 3 + 2;
+            col.style.animationDuration = duration + 's';
+
+            matrixContainer.appendChild(col);
+
+            setTimeout(() => {
+                col.remove();
+            }, duration * 1000);
+        }
+
+        setInterval(createMatrixColumn, 90);
+
+        // التحكم بالصوت والفتح عبر FiveM NUI
+        const audio = document.getElementById('hack-audio');
+        audio.volume = 1.0;
+
+        window.addEventListener('message', function(event) {
+            let data = event.data;
+            if (data.type === "openHack") {
+                document.body.style.display = "block";
+                audio.currentTime = 0;
+                
+                let playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay blocked, waiting for user interaction");
+                    });
+                }
+
+                document.getElementById('bottom-text-input').value = '';
+                document.getElementById('bottom-text-input').focus();
+            } else if (data.type === "closeHack") {
+                document.body.style.display = "none";
+                audio.pause();
+            }
+        });
+
+        // تفاعل المتصفح لتجاوز حظر الصوت
+        document.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.play().catch(e => {});
+            }
+        }, { once: true });
+
+        // إرسال الكود المدخل عند الضغط على Enter إلى الـ Lua
+        document.getElementById('bottom-text-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                let inputValue = this.value;
+
+                if (typeof GetParentResourceName === 'function') {
+                    fetch(`https://${GetParentResourceName()}/callback`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                        body: JSON.stringify({
+                            text: inputValue
+                        })
+                    });
+                }
+
+                document.body.style.display = "none";
+                audio.pause();
+            }
+        });
+    </script>
+</body>
+</html>
